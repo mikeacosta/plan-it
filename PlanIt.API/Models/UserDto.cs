@@ -8,5 +8,8 @@ public class UserDto
 
     public string Email { get; set; } = String.Empty;
     
-    public int NumberOfExperiences { get; set; }
+    public int NumberOfExperiences => Experiences.Count;
+
+    public ICollection<ExperienceDto> Experiences { get; set; }
+        = new List<ExperienceDto>();
 }
