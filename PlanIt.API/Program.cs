@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using PlanIt.API.DbContexts;
 using PlanIt.API.Models;
 using Serilog;
 using Serilog.Events;
@@ -26,6 +28,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<UsersDataStore>();
+
+builder.Services.AddDbContext<PlanItDbContext>(
+    dbContextOptions => dbContextOptions.UseMySQL(
+        builder.Configuration["ConnectionStrings:PlanItDBConnectionString"]));
 
 var app = builder.Build();
 
