@@ -9,22 +9,36 @@ namespace PlanIt.API.Controllers;
 public class ExperiencesController : ControllerBase
 {
     private readonly UsersDataStore _usersDataStore;
+    private readonly ILogger<ExperiencesController> _logger;
 
-    public ExperiencesController(UsersDataStore usersDataStore)
+    public ExperiencesController(UsersDataStore usersDataStore,
+        ILogger<ExperiencesController> logger)
     {
-        _usersDataStore = usersDataStore;
+        _usersDataStore = usersDataStore ?? throw new ArgumentNullException(nameof(usersDataStore));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
     
     [HttpGet]
     public ActionResult<IEnumerable<ExperienceDto>> GetExperiences(
         int userId)
     {
-        var user = _usersDataStore.Users.FirstOrDefault(c => c.Id == userId);
+        try
+        {
+            var user = _usersDataStore.Users.FirstOrDefault(c => c.Id == userId);
 
-        if (user == null)
-            return NotFound();
-
-        return Ok(user.Experiences);
+            if (user == null)
+            {
+                _logger.LogInformation(
+                    $"User with id {userId} wasn't found when accessing experiences.");
+                return NotFound();
+            }
+            return Ok(user.Experiences);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical($"Exception while getting experiences for user with id {userId}.", ex);
+            return StatusCode(500, "A problem occured while handling the request.");
+        }
     }
 
     [HttpGet("{experienceId}", Name = "GetExperience")]
