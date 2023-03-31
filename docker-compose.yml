@@ -1,0 +1,25 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.4'
+
+services:
+  planitapi:
+    image: planitapi
+    depends_on:
+      - planitdb
+    build:
+      context: .
+      dockerfile: PlanIt.API/Dockerfile
+    ports:
+      - 8080:80
+    environment:
+      - TestEnvVar="test-value"
+
+  planitdb:
+    image: mysql
+    container_name: planit_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Abc12345
+      MYSQL_DATABASE: dev_db
+    ports:
+      - "3307:3306"
