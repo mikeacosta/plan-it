@@ -5,6 +5,7 @@ version: '3.4'
 services:
   planitapi:
     image: planitapi
+    container_name: planit_api
     depends_on:
       - planitdb
     build:
@@ -14,6 +15,7 @@ services:
       - 8080:80
     environment:
       - TestEnvVar="test-value"
+      - ConnectionStrings__PlanItDBConnectionString=server=planitdb;port=3306;database=dev_db;user=root;password=Abc12345
 
   planitdb:
     image: mysql

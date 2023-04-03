@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.API.Models;
+using PlanIt.API.Repositories;
 
 namespace PlanIt.API.Controllers;
 
@@ -7,35 +8,57 @@ namespace PlanIt.API.Controllers;
 [Route("api/users")]
 public class UsersController : ControllerBase
 {
-    private readonly UsersDataStore _usersDataStore;
     private readonly ILogger<ExperiencesController> _logger;
+    private readonly IUserRepository _userRepository;
 
-    public UsersController(UsersDataStore usersDataStore,
-        ILogger<ExperiencesController> logger)
+    public UsersController(ILogger<ExperiencesController> logger,
+        IUserRepository userRepository)
     {
-        _usersDataStore = usersDataStore ?? throw new ArgumentNullException(nameof(usersDataStore));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
     
     [HttpGet]
-    public ActionResult<IEnumerable<UserDto>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
-        return Ok(_usersDataStore.Users);
+        var userEntities = await _userRepository.GetUsersAsync();
+        var users = userEntities.Select(u => new UserDto()
+        {
+            Id = u.Id,
+            Username = u.Username,
+            Email = u.Email
+        });
+        return Ok(users);
     }
     
     [HttpGet("{id}")]
-    public ActionResult<UserDto> GetUser(int id)
+    public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         try
         {
-            var user = _usersDataStore.Users.FirstOrDefault(u => u.Id == id);
+            var userEntity = await _userRepository.GetUserAsync(id, true);
 
-            if (user == null)
+            if (userEntity == null)
             {
                 _logger.LogInformation(
                     $"User with id {id} wasn't found.");
                 return NotFound();
             }
+
+            var user = new UserDto()
+            {
+                Id = userEntity.Id,
+                Username = userEntity.Username,
+                Experiences = userEntity.Experiences.Select(e => new ExperienceDto()
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    Description = e.Description,
+                    City = e.City,
+                    State = e.State,
+                    Country = e.Country
+                }).ToList()
+            };
             
             return Ok(user);
         }
