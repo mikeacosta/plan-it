@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.API.Models;
+using PlanIt.API.Repositories;
 
 namespace PlanIt.API.Controllers;
 
@@ -10,29 +12,36 @@ public class ExperiencesController : ControllerBase
 {
     private readonly UsersDataStore _usersDataStore;
     private readonly ILogger<ExperiencesController> _logger;
+    private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
     public ExperiencesController(UsersDataStore usersDataStore,
-        ILogger<ExperiencesController> logger)
+        ILogger<ExperiencesController> logger,
+        IUserRepository userRepository,
+        IMapper mapper)
     {
         _usersDataStore = usersDataStore ?? throw new ArgumentNullException(nameof(usersDataStore));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
     
     [HttpGet]
-    public ActionResult<IEnumerable<ExperienceDto>> GetExperiences(
+    public async Task<ActionResult<IEnumerable<ExperienceDto>>> GetExperiences(
         int userId)
     {
         try
         {
-            var user = _usersDataStore.Users.FirstOrDefault(c => c.Id == userId);
-
-            if (user == null)
+            if (!await _userRepository.UserExistsAsync(userId))
             {
                 _logger.LogInformation(
                     $"User with id {userId} wasn't found when accessing experiences.");
                 return NotFound();
             }
-            return Ok(user.Experiences);
+            
+            var experiences = await _userRepository.GetExperiencesForUserAsync(userId);
+
+            return Ok(_mapper.Map<IEnumerable<ExperienceDto>>(experiences));
         }
         catch (Exception ex)
         {
@@ -42,20 +51,17 @@ public class ExperiencesController : ControllerBase
     }
 
     [HttpGet("{experienceId}", Name = "GetExperience")]
-    public ActionResult<ExperienceDto> GetExperience(int userId, int experienceId)
+    public async Task<ActionResult<ExperienceDto>> GetExperience(int userId, int experienceId)
     {
-        var user = (_usersDataStore.Users.FirstOrDefault(c => c.Id == userId));
-
-        if (user == null)
+        if (!await _userRepository.UserExistsAsync(userId))
             return NotFound();
 
-        var experience = user.Experiences
-            .FirstOrDefault(p => p.Id == experienceId);
+        var experience = await _userRepository.GetExperienceForUserAsync(userId, experienceId);
 
         if (experience == null)
             return NotFound();
 
-        return Ok(experience);
+        return Ok(_mapper.Map<ExperienceDto>(experience));
     }
     
     [HttpPost]

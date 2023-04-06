@@ -26,12 +26,6 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<IEnumerable<UserWithoutExperiencesDto>>> GetUsers()
     {
         var userEntities = await _userRepository.GetUsersAsync();
-        // var users = userEntities.Select(u => new UserDto()
-        // {
-        //     Id = u.Id,
-        //     Username = u.Username,
-        //     Email = u.Email
-        // });
         var users = _mapper.Map<IEnumerable<UserWithoutExperiencesDto>>(userEntities);
         return Ok(users);
     }
@@ -49,22 +43,7 @@ public class UsersController : ControllerBase
                     $"User with id {id} wasn't found.");
                 return NotFound();
             }
-
-            // var user = new UserDto()
-            // {
-            //     Id = userEntity.Id,
-            //     Username = userEntity.Username,
-            //     Experiences = userEntity.Experiences.Select(e => new ExperienceDto()
-            //     {
-            //         Id = e.Id,
-            //         Title = e.Title,
-            //         Description = e.Description,
-            //         City = e.City,
-            //         State = e.State,
-            //         Country = e.Country
-            //     }).ToList()
-            // };
-
+            
             if (includeExperiences)
                 return Ok(_mapper.Map<UserDto>(userEntity));
             

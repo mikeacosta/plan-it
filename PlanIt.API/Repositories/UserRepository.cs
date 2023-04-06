@@ -30,6 +30,11 @@ public class UserRepository : IUserRepository
             .Where(u => u.Id == userId).FirstOrDefaultAsync();
     }
 
+    public async Task<bool> UserExistsAsync(int userId)
+    {
+        return await _context.Users.AnyAsync(u => u.Id == userId);
+    }
+
     public async Task<IEnumerable<Experience>> GetExperiencesForUserAsync(int userId)
     {
         return await _context.Experiences
