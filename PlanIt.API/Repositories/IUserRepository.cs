@@ -9,4 +9,6 @@ public interface IUserRepository
     Task<bool> UserExistsAsync(int userId);
     Task<IEnumerable<Experience>> GetExperiencesForUserAsync(int userId);
     Task<Experience?> GetExperienceForUserAsync(int userId, int experienceId);
+    Task AddExperienceForUserAsync(int userId, Experience experience);
+    Task<bool> SaveChangesAsync();
 }

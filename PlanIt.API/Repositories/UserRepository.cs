@@ -47,4 +47,15 @@ public class UserRepository : IUserRepository
             .Where(e => e.UserId == userId && e.Id == experienceId)
             .FirstOrDefaultAsync();
     }
+
+    public async Task AddExperienceForUserAsync(int userId, Experience experience)
+    {
+        var user = await GetUserAsync(userId, false);
+        user?.Experiences.Add(experience);
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return (await _context.SaveChangesAsync() >= 0);
+    }
 }

@@ -65,35 +65,26 @@ public class ExperiencesController : ControllerBase
     }
     
     [HttpPost]
-    public ActionResult<ExperienceDto> CreateExperience(int userId,
+    public async Task<ActionResult<ExperienceDto>> CreateExperience(int userId,
         ExperienceCreationDto experience)
     {
-        var user = _usersDataStore.Users.FirstOrDefault(u => u.Id == userId);
-        if (user == null)
+        if (!await _userRepository.UserExistsAsync(userId))
             return NotFound();
 
-        var maxExperienceId = _usersDataStore.Users.SelectMany(u => u.Experiences)
-            .Max(e => e.Id);
+        var createdExperience = _mapper.Map<Entities.Experience>(experience);
 
-        var createdExperience = new ExperienceDto()
-        {
-            Id = ++maxExperienceId,
-            Title = experience.Title,
-            Description = experience.Description,
-            City = experience.City,
-            State = experience.State,
-            Country = experience.Country
-        };
+        await _userRepository.AddExperienceForUserAsync(userId, createdExperience);
+        await _userRepository.SaveChangesAsync();
 
-        user.Experiences.Add(createdExperience);
-
+        var result = _mapper.Map<Models.ExperienceDto>(createdExperience);
+        
         return CreatedAtRoute("GetExperience",
             new
             {
                 userId = userId,
-                experienceId = createdExperience.Id
+                experienceId = result.Id
             },
-            createdExperience);
+            result);
     }
     
     [HttpPut("{experienceId}")]
