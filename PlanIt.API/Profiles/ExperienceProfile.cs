@@ -8,5 +8,7 @@ public class ExperienceProfile : Profile
     {
         CreateMap<Entities.Experience, Models.ExperienceDto>();
         CreateMap<Models.ExperienceCreationDto, Entities.Experience>();
+        CreateMap<Models.ExperienceUpdateDto, Entities.Experience>();
+        CreateMap<Entities.Experience, Models.ExperienceUpdateDto>();
     }
 }

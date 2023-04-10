@@ -54,6 +54,11 @@ public class UserRepository : IUserRepository
         user?.Experiences.Add(experience);
     }
 
+    public void DeleteExperience(Experience experience)
+    {
+        _context.Experiences.Remove(experience);
+    }
+
     public async Task<bool> SaveChangesAsync()
     {
         return (await _context.SaveChangesAsync() >= 0);

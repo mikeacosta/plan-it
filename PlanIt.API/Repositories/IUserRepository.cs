@@ -10,5 +10,6 @@ public interface IUserRepository
     Task<IEnumerable<Experience>> GetExperiencesForUserAsync(int userId);
     Task<Experience?> GetExperienceForUserAsync(int userId, int experienceId);
     Task AddExperienceForUserAsync(int userId, Experience experience);
+    void DeleteExperience(Experience experience);
     Task<bool> SaveChangesAsync();
 }

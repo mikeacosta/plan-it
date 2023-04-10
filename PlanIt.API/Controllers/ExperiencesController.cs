@@ -10,17 +10,14 @@ namespace PlanIt.API.Controllers;
 [ApiController]
 public class ExperiencesController : ControllerBase
 {
-    private readonly UsersDataStore _usersDataStore;
     private readonly ILogger<ExperiencesController> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public ExperiencesController(UsersDataStore usersDataStore,
-        ILogger<ExperiencesController> logger,
+    public ExperiencesController(ILogger<ExperiencesController> logger,
         IUserRepository userRepository,
         IMapper mapper)
     {
-        _usersDataStore = usersDataStore ?? throw new ArgumentNullException(nameof(usersDataStore));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -88,47 +85,35 @@ public class ExperiencesController : ControllerBase
     }
     
     [HttpPut("{experienceId}")]
-    public ActionResult UpdateExperience(int userId, int experienceId,
+    public async Task<ActionResult> UpdateExperience(int userId, int experienceId,
         ExperienceUpdateDto experience)
     {
-        var user = _usersDataStore.Users.FirstOrDefault(u => u.Id == userId);
-        if (user == null)
+        if (!await _userRepository.UserExistsAsync(userId))
             return NotFound();
 
-        var experienceFromStore = user.Experiences.FirstOrDefault(e => e.Id == experienceId);
-        if (experienceFromStore == null)
+        var experienceEntity = await _userRepository.GetExperienceForUserAsync(userId, experienceId);
+        if (experienceEntity == null)
             return NotFound();
 
-        experienceFromStore.Title = experience.Title;
-        experienceFromStore.Description = experience.Description;
-        experienceFromStore.City = experience.City;
-        experienceFromStore.State = experience.State;
-        experienceFromStore.Country = experience.Country;
-
+        _mapper.Map(experience, experienceEntity);
+        await _userRepository.SaveChangesAsync();
+        
         return NoContent();
     }
     
     [HttpPatch("{experienceId}")]
-    public ActionResult PartiallyUpdateExperience(
+    public async Task<ActionResult> PartiallyUpdateExperience(
         int userId, int experienceId,
         JsonPatchDocument<ExperienceUpdateDto> patchDocument)
     {
-        var user = _usersDataStore.Users.FirstOrDefault(u => u.Id == userId);
-        if (user == null)
+        if (!await _userRepository.UserExistsAsync(userId))
             return NotFound();
 
-        var experienceFromStore = user.Experiences.FirstOrDefault(e => e.Id == experienceId);
-        if (experienceFromStore == null)
+        var experienceEntity = await _userRepository.GetExperienceForUserAsync(userId, experienceId);
+        if (experienceEntity == null)
             return NotFound();
 
-        var experienceToPatch = new ExperienceUpdateDto()
-        {
-            Title = experienceFromStore.Title,
-            Description = experienceFromStore.Description,
-            City = experienceFromStore.City,
-            State = experienceFromStore.State,
-            Country = experienceFromStore.Country
-        };
+        var experienceToPatch = _mapper.Map<ExperienceUpdateDto>(experienceEntity);
 
         patchDocument.ApplyTo(experienceToPatch, ModelState);
 
@@ -138,27 +123,24 @@ public class ExperiencesController : ControllerBase
         if (!TryValidateModel(experienceToPatch))
             return BadRequest(ModelState);
 
-        experienceFromStore.Title = experienceToPatch.Title;
-        experienceFromStore.Description = experienceToPatch.Description;
-        experienceFromStore.City = experienceToPatch.City;
-        experienceFromStore.State = experienceToPatch.State;
-        experienceFromStore.Country = experienceToPatch.Country;
+        _mapper.Map(experienceToPatch, experienceEntity);
+        await _userRepository.SaveChangesAsync();
 
         return NoContent();
     }
     
     [HttpDelete("{experienceId}")]
-    public ActionResult DeleteExperience(int userId, int experienceId)
+    public async Task<ActionResult> DeleteExperience(int userId, int experienceId)
     {
-        var user = _usersDataStore.Users.FirstOrDefault(u => u.Id == userId);
-        if (user == null)
+        if (!await _userRepository.UserExistsAsync(userId))
             return NotFound();
 
-        var experienceFromStore = user.Experiences.FirstOrDefault(e => e.Id == experienceId);
-        if (experienceFromStore == null)
+        var experienceEntity = await _userRepository.GetExperienceForUserAsync(userId, experienceId);
+        if (experienceEntity == null)
             return NotFound();
 
-        user.Experiences.Remove(experienceFromStore);
+        _userRepository.DeleteExperience(experienceEntity);
+        await _userRepository.SaveChangesAsync();
 
         return NoContent();
     }

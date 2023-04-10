@@ -28,8 +28,6 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<UsersDataStore>();
-
 builder.Services.AddDbContext<PlanItDbContext>(
     dbContextOptions => dbContextOptions.UseMySQL(
         builder.Configuration["ConnectionStrings:PlanItDBConnectionString"]));
