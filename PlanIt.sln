@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanIt.API", "PlanIt.API\PlanIt.API.csproj", "{AAD74423-582C-4AC8-9F0B-A7F1C5AC2514}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanIt.Test", "PlanIt.Test\PlanIt.Test.csproj", "{21C556E8-C5CE-4E73-B394-42D7C106F133}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{AAD74423-582C-4AC8-9F0B-A7F1C5AC2514}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAD74423-582C-4AC8-9F0B-A7F1C5AC2514}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD74423-582C-4AC8-9F0B-A7F1C5AC2514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

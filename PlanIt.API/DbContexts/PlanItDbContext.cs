@@ -18,7 +18,7 @@ public class PlanItDbContext : DbContext
         modelBuilder.Entity<User>().HasData(
             new User("joeblow", "joe@blow.com") {Id = 1},
             new User("mickey.mouse", "mickey@disney.com") {Id = 2},
-            new User("anonymous", "user@gmail") {Id = 3}
+            new User("anonymous", "user@gmail.com") {Id = 3}
         );
         
         modelBuilder.Entity<Experience>().HasData(

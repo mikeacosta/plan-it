@@ -9,11 +9,11 @@ namespace PlanIt.API.Controllers;
 [Route("api/users")]
 public class UsersController : ControllerBase
 {
-    private readonly ILogger<ExperiencesController> _logger;
+    private readonly ILogger<UsersController> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public UsersController(ILogger<ExperiencesController> logger,
+    public UsersController(ILogger<UsersController> logger,
         IUserRepository userRepository,
         IMapper mapper)
     {
