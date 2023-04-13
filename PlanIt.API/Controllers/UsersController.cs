@@ -23,9 +23,10 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserWithoutExperiencesDto>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserWithoutExperiencesDto>>> GetUsers(
+        [FromQuery] string? username, [FromQuery] string? searchQuery)
     {
-        var userEntities = await _userRepository.GetUsersAsync();
+        var userEntities = await _userRepository.GetUsersAsync(username, searchQuery);
         var users = _mapper.Map<IEnumerable<UserWithoutExperiencesDto>>(userEntities);
         return Ok(users);
     }

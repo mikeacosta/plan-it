@@ -42,7 +42,7 @@ public class UsersControllerTest
     [Fact]
     public async Task GetUsers_GetAction_MustReturnOkObjectResult()
     {
-        var result = await _usersController.GetUsers();
+        var result = await _usersController.GetUsers(null, null);
 
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserWithoutExperiencesDto>>>(result);
         Assert.IsType<OkObjectResult>(actionResult.Result);

@@ -17,6 +17,28 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.OrderBy(u => u.Username).ToListAsync();
     }
+    
+    public async Task<IEnumerable<User>> GetUsersAsync(string? username, string? searchQuery)
+    {
+        if (string.IsNullOrEmpty(username) && string.IsNullOrWhiteSpace(searchQuery))
+            return await GetUsersAsync();
+
+        var collection = _context.Users as IQueryable<User>;
+
+        if (!string.IsNullOrWhiteSpace(username))
+            collection = collection.Where(u => u.Username == username.Trim());
+
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            searchQuery = searchQuery.Trim();
+            collection = collection.Where(a => a.Username.Contains(searchQuery)
+                                               || a.Email.Contains(searchQuery));
+        }
+        
+        return await collection
+            .OrderBy(u => u.Username)
+            .ToListAsync();
+    }
 
     public async Task<User?> GetUserAsync(int userId, bool includeExperiences)
     {
