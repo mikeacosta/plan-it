@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.API.Models;
@@ -12,6 +13,7 @@ public class UsersController : ControllerBase
     private readonly ILogger<UsersController> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private const int maxPageSize = 20;
 
     public UsersController(ILogger<UsersController> logger,
         IUserRepository userRepository,
@@ -24,9 +26,17 @@ public class UsersController : ControllerBase
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserWithoutExperiencesDto>>> GetUsers(
-        [FromQuery] string? username, [FromQuery] string? searchQuery)
+        string? username, string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {
-        var userEntities = await _userRepository.GetUsersAsync(username, searchQuery);
+        if (pageSize > maxPageSize)
+            pageSize = maxPageSize;
+        
+        var (userEntities, pageMetadata) = await _userRepository
+            .GetUsersAsync(username, searchQuery, pageNumber, pageSize);
+        
+        Response.Headers.Add("X-Pagination",
+            JsonSerializer.Serialize(pageMetadata));
+        
         var users = _mapper.Map<IEnumerable<UserWithoutExperiencesDto>>(userEntities);
         return Ok(users);
     }

@@ -5,7 +5,8 @@ namespace PlanIt.API.Repositories;
 public interface IUserRepository
 {
     Task<IEnumerable<User>> GetUsersAsync();
-    Task<IEnumerable<User>> GetUsersAsync(string? username, string? searchQuery);
+    Task<(IEnumerable<User>, PageMetadata)> GetUsersAsync(
+        string? username, string? searchQuery, int pageNumber, int pageSize);
     Task<User?> GetUserAsync(int userId, bool includeExperiences);
     Task<bool> UserExistsAsync(int userId);
     Task<IEnumerable<Experience>> GetExperiencesForUserAsync(int userId);

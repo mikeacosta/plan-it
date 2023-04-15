@@ -18,11 +18,9 @@ public class UserRepository : IUserRepository
         return await _context.Users.OrderBy(u => u.Username).ToListAsync();
     }
     
-    public async Task<IEnumerable<User>> GetUsersAsync(string? username, string? searchQuery)
+    public async Task<(IEnumerable<User>, PageMetadata)> GetUsersAsync(
+        string? username, string? searchQuery, int pageNumber, int pageSize)
     {
-        if (string.IsNullOrEmpty(username) && string.IsNullOrWhiteSpace(searchQuery))
-            return await GetUsersAsync();
-
         var collection = _context.Users as IQueryable<User>;
 
         if (!string.IsNullOrWhiteSpace(username))
@@ -35,9 +33,17 @@ public class UserRepository : IUserRepository
                                                || a.Email.Contains(searchQuery));
         }
         
-        return await collection
+        var totalItemCount = await collection.CountAsync();
+        
+        var pageMetadata = new PageMetadata(totalItemCount, pageSize, pageNumber);
+        
+        var result = await collection
             .OrderBy(u => u.Username)
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
             .ToListAsync();
+
+        return (result, pageMetadata);
     }
 
     public async Task<User?> GetUserAsync(int userId, bool includeExperiences)
