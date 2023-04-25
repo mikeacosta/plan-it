@@ -10,7 +10,7 @@ services:
       - planitdb
     build:
       context: .
-      dockerfile: PlanIt.API/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - 8080:80
     environment:
