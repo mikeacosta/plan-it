@@ -14,7 +14,6 @@ services:
     ports:
       - 8080:80
     environment:
-      - TestEnvVar="test-value"
       - ConnectionStrings__PlanItDBConnectionString=server=planitdb;port=3306;database=dev_db;user=root;password=Abc12345
 
   planitdb:
