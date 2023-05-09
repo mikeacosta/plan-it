@@ -1,4 +1,4 @@
-namespace PlanIt.API.Models;
+namespace PlanIt.Models.DTOs;
 
 public class UserDto
 {

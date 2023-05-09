@@ -6,7 +6,7 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
-        CreateMap<Entities.User, Models.UserWithoutExperiencesDto>();
-        CreateMap<Entities.User, Models.UserDto>();
+        CreateMap<Entities.User, PlanIt.Models.DTOs.UserWithoutExperiencesDto>();
+        CreateMap<Entities.User, PlanIt.Models.DTOs.UserDto>();
     }
 }

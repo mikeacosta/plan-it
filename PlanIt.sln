@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanIt.API", "PlanIt.API\Pl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanIt.Test", "PlanIt.Test\PlanIt.Test.csproj", "{21C556E8-C5CE-4E73-B394-42D7C106F133}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanIt.Models", "PlanIt.Models\PlanIt.Models.csproj", "{C0C66FD0-3277-4EA8-B46A-3F506694BA85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21C556E8-C5CE-4E73-B394-42D7C106F133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C66FD0-3277-4EA8-B46A-3F506694BA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C66FD0-3277-4EA8-B46A-3F506694BA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C66FD0-3277-4EA8-B46A-3F506694BA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C66FD0-3277-4EA8-B46A-3F506694BA85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

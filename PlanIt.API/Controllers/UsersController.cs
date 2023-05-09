@@ -1,8 +1,8 @@
 using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.API.Models;
 using PlanIt.API.Repositories;
+using PlanIt.Models.DTOs;
 
 namespace PlanIt.API.Controllers;
 

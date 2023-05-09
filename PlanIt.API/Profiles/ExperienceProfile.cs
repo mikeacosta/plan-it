@@ -6,9 +6,9 @@ public class ExperienceProfile : Profile
 {
     public ExperienceProfile()
     {
-        CreateMap<Entities.Experience, Models.ExperienceDto>();
-        CreateMap<Models.ExperienceCreationDto, Entities.Experience>();
-        CreateMap<Models.ExperienceUpdateDto, Entities.Experience>();
-        CreateMap<Entities.Experience, Models.ExperienceUpdateDto>();
+        CreateMap<Entities.Experience, PlanIt.Models.DTOs.ExperienceDto>();
+        CreateMap<PlanIt.Models.DTOs.ExperienceCreationDto, Entities.Experience>();
+        CreateMap<PlanIt.Models.DTOs.ExperienceUpdateDto, Entities.Experience>();
+        CreateMap<Entities.Experience, PlanIt.Models.DTOs.ExperienceUpdateDto>();
     }
 }

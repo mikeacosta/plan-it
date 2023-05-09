@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PlanIt.API.Models;
+namespace PlanIt.Models.DTOs;
 
-public class ExperienceCreationDto
+public class ExperienceUpdateDto
 {
     [Required(ErrorMessage = "Title is required")]
     [MaxLength(50)]

@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using PlanIt.API.Models;
 using PlanIt.API.Repositories;
+using PlanIt.Models.DTOs;
 
 namespace PlanIt.API.Controllers;
 
@@ -73,7 +73,7 @@ public class ExperiencesController : ControllerBase
         await _userRepository.AddExperienceForUserAsync(userId, createdExperience);
         await _userRepository.SaveChangesAsync();
 
-        var result = _mapper.Map<Models.ExperienceDto>(createdExperience);
+        var result = _mapper.Map<ExperienceDto>(createdExperience);
         
         return CreatedAtRoute("GetExperience",
             new

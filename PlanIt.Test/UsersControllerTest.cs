@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PlanIt.API.Controllers;
 using PlanIt.API.Entities;
-using PlanIt.API.Models;
 using PlanIt.API.Profiles;
 using PlanIt.API.Repositories;
+using PlanIt.Models.DTOs;
 
 namespace PlanIt.Test;
 
