@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -17,15 +18,21 @@ public class UsersControllerTest
     public UsersControllerTest()
     {
         var loggerMock = new Mock<ILogger<UsersController>>();
-        
+
+        var pageSize = 10;
+        var pageNumber = 1;
+
+        var users = new List<User>()
+        {
+            new User("joeblow", "joe@blow.com"),
+            new User("mickey.mouse", "mickey@disney.com"),
+            new User("anonymous", "user@gmail.com")
+        };
+        var pageMetaData = new PageMetadata(users.Count, pageSize, pageNumber);
+
         var userRepositoryMock = new Mock<IUserRepository>();
-        userRepositoryMock.Setup(m => m.GetUsersAsync())
-            .ReturnsAsync(new List<User>()
-            {
-                new User("joeblow", "joe@blow.com"),
-                new User("mickey.mouse", "mickey@disney.com"),
-                new User("anonymous", "user@gmail.com")
-            });
+        userRepositoryMock.Setup(m => m.GetUsersAsync(null, null, pageNumber, pageSize))
+            .ReturnsAsync((users, pageMetaData));
 
         // var mapperMock = new Mock<IMapper>();
         // mapperMock.Setup(m => 
@@ -36,7 +43,8 @@ public class UsersControllerTest
             cfg => cfg.AddProfile<UserProfile>());
         var mapper = new Mapper(mapperConfiguration);
 
-        _usersController = new UsersController(loggerMock.Object, userRepositoryMock.Object, mapper);        
+        _usersController = new UsersController(loggerMock.Object, userRepositoryMock.Object, mapper);  
+        _usersController.ControllerContext.HttpContext = new DefaultHttpContext();
     }
     
     [Fact]
