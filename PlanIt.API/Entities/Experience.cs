@@ -30,6 +30,9 @@ public class Experience
     [ForeignKey("UserId")]
     public User? User { get; set; }
     public int UserId { get; set; }
+    
+    public ICollection<Rating> Ratings { get; set; }
+        = new List<Rating>();
 
     public Experience(string title, string city, string country)
     {

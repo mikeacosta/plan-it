@@ -7,6 +7,8 @@ public class PlanItDbContext : DbContext
 {
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Experience> Experiences { get; set; } = null!;
+
+    public DbSet<Rating> Ratings { get; set; } = null!;
     
     public PlanItDbContext(DbContextOptions<PlanItDbContext> options)
         : base(options)
@@ -15,6 +17,8 @@ public class PlanItDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Rating>().HasKey(t => new { t.UserId, t.ExperienceId });
+        
         modelBuilder.Entity<User>().HasData(
             new User("joeblow", "joe@blow.com") {Id = 1},
             new User("mickey.mouse", "mickey@disney.com") {Id = 2},
@@ -65,6 +69,12 @@ public class PlanItDbContext : DbContext
                 UserId = 3,
                 Description = "Nicely designed and maintained gardens, similar to those of Generalife in Granada, Spain. It’s a good place to recoup from the intensity of the market atmosphere."
             }
+        );
+        
+        modelBuilder.Entity<Rating>().HasData(
+            new Rating() {StarCount = 5, UserId = 1, ExperienceId = 1},
+            new Rating() {StarCount = 4, UserId = 1, ExperienceId = 2},
+            new Rating() {StarCount = 2, UserId = 2, ExperienceId = 1}
         );
         
         base.OnModelCreating(modelBuilder);

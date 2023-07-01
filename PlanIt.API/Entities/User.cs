@@ -20,6 +20,9 @@ public class User
     public ICollection<Experience> Experiences { get; set; }
         = new List<Experience>();
 
+    public ICollection<Rating> Ratings { get; set; }
+        = new List<Rating>();
+
     public User(string username, string email)
     {
         Username = username;
