@@ -8,14 +8,14 @@ namespace PlanIt.API.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
-    private readonly ILogger<UsersController> _logger;
+    private readonly ILogger<UserController> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-    private const int maxPageSize = 20;
+    private const int MaxPageSize = 20;
 
-    public UsersController(ILogger<UsersController> logger,
+    public UserController(ILogger<UserController> logger,
         IUserRepository userRepository,
         IMapper mapper)
     {
@@ -28,15 +28,15 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<IEnumerable<UserWithoutExperiencesDto>>> GetUsers(
         string? username, string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {
-        if (pageSize > maxPageSize)
-            pageSize = maxPageSize;
+        if (pageSize > MaxPageSize)
+            pageSize = MaxPageSize;
         
         var (userEntities, pageMetadata) = await _userRepository
             .GetUsersAsync(username, searchQuery, pageNumber, pageSize);
         
         Response.Headers.Add("X-Pagination",
             JsonSerializer.Serialize(pageMetadata));
-        
+
         var users = _mapper.Map<IEnumerable<UserWithoutExperiencesDto>>(userEntities);
         return Ok(users);
     }

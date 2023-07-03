@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -8,19 +9,44 @@ namespace PlanIt.API.Controllers;
 
 [Route("api/users/{userId}/experiences")]
 [ApiController]
-public class ExperiencesController : ControllerBase
+public class ExperienceController : ControllerBase
 {
-    private readonly ILogger<ExperiencesController> _logger;
+    private readonly ILogger<ExperienceController> _logger;
     private readonly IUserRepository _userRepository;
+    private readonly IExperienceRepository _experienceRepository;
     private readonly IMapper _mapper;
+    private const int MaxPageSize = 20;
 
-    public ExperiencesController(ILogger<ExperiencesController> logger,
+    public ExperienceController(ILogger<ExperienceController> logger,
         IUserRepository userRepository,
+        IExperienceRepository experienceRepository,
         IMapper mapper)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _experienceRepository = experienceRepository ?? throw new ArgumentNullException(nameof(experienceRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
+
+    /// <summary>
+    /// Get all experiences
+    /// </summary>
+    [HttpGet]
+    [Route("~/api/experiences/all")]
+    public async Task<ActionResult<IEnumerable<ExperienceDto>>> GetAllExperiences(
+        string? searchQuery, int pageNumber = 1, int pageSize = 10)
+    {
+        if (pageSize > MaxPageSize)
+            pageSize = MaxPageSize;
+        
+        var (entities, pageMetadata) = await _experienceRepository
+            .GetExperiencesAsync(searchQuery, pageNumber, pageSize);
+        
+        Response.Headers.Add("X-Pagination",
+            JsonSerializer.Serialize(pageMetadata));
+
+        var experiences = _mapper.Map<IEnumerable<ExperienceDto>>(entities);
+        return Ok(experiences);
     }
     
     [HttpGet]

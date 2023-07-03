@@ -30,6 +30,7 @@ internal static class WebAppBuilderExtensions
                 builder.Configuration["ConnectionStrings:PlanItDBConnectionString"]));
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

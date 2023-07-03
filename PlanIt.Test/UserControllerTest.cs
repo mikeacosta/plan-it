@@ -11,13 +11,13 @@ using PlanIt.Models.DTOs;
 
 namespace PlanIt.Test;
 
-public class UsersControllerTest
+public class UserControllerTest
 {
-    private UsersController _usersController;
+    private UserController _userController;
 
-    public UsersControllerTest()
+    public UserControllerTest()
     {
-        var loggerMock = new Mock<ILogger<UsersController>>();
+        var loggerMock = new Mock<ILogger<UserController>>();
 
         var pageSize = 10;
         var pageNumber = 1;
@@ -43,14 +43,14 @@ public class UsersControllerTest
             cfg => cfg.AddProfile<UserProfile>());
         var mapper = new Mapper(mapperConfiguration);
 
-        _usersController = new UsersController(loggerMock.Object, userRepositoryMock.Object, mapper);  
-        _usersController.ControllerContext.HttpContext = new DefaultHttpContext();
+        _userController = new UserController(loggerMock.Object, userRepositoryMock.Object, mapper);  
+        _userController.ControllerContext.HttpContext = new DefaultHttpContext();
     }
     
     [Fact]
     public async Task GetUsers_GetAction_MustReturnOkObjectResult()
     {
-        var result = await _usersController.GetUsers(null, null);
+        var result = await _userController.GetUsers(null, null);
 
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserWithoutExperiencesDto>>>(result);
         Assert.IsType<OkObjectResult>(actionResult.Result);
