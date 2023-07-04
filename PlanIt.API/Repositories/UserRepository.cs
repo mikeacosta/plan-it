@@ -73,6 +73,7 @@ public class UserRepository : IUserRepository
     {
         return await _context.Experiences
             .Where(e => e.UserId == userId && e.Id == experienceId)
+            .Include(e => e.Ratings)
             .FirstOrDefaultAsync();
     }
 

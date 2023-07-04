@@ -16,7 +16,8 @@ public class ExperienceRepository : IExperienceRepository
     public async Task<(IEnumerable<Experience>, PageMetadata)> GetExperiencesAsync(
         string? searchQuery, int pageNumber, int pageSize)
     {
-        var experiences = _context.Experiences as IQueryable<Experience>;
+        var experiences = _context.Experiences
+            .Include(e => e.Ratings) as IQueryable<Experience>;
 
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {

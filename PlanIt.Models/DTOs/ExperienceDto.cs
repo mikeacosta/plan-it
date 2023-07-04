@@ -13,4 +13,6 @@ public class ExperienceDto
     public string? State { get; set; }
     
     public string Country { get; set; } = string.Empty;
+
+    public double AverageRating { get; set; } = 0.0;
 }
