@@ -31,6 +31,7 @@ internal static class WebAppBuilderExtensions
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
+        builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
