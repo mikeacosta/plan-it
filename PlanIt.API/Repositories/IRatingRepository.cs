@@ -5,5 +5,6 @@ namespace PlanIt.API.Repositories;
 public interface IRatingRepository
 {
     Task<Rating?> GetRatingAsync(int userId, int experienceId);
-    Task AddRatingAsync(Rating rating);
+    Task UpsertRatingAsync(Rating rating);
+    Task<bool> SaveChangesAsync();
 }

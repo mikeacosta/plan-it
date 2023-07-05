@@ -20,9 +20,19 @@ public class RatingRepository : IRatingRepository
         return rating;
     }
 
-    public async Task AddRatingAsync(Rating rating)
+    public async Task UpsertRatingAsync(Rating rating)
     {
-        throw new NotImplementedException();
+        var existingRating = await GetRatingAsync(rating.UserId, rating.ExperienceId);
+
+        if (existingRating == null)
+        {
+            await _context.Ratings.AddAsync(rating);
+        }
+        else
+        {
+            existingRating.StarCount = rating.StarCount;
+            _context.Ratings.Update(existingRating);
+        }
     }
     
     public async Task<bool> SaveChangesAsync()

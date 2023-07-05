@@ -23,10 +23,10 @@ public class RatingController : ControllerBase
     }
 
     /// <summary>
-    /// Get all experiences
+    /// Get a user's rating for an experience
     /// </summary>
     [HttpGet]
-    [Route("users/{userId}/experiences/{experienceId}/ratings")]
+    [Route("users/{userId}/experiences/{experienceId}/ratings", Name = "GetRating")]
     public async Task<ActionResult<RatingDto>> GetRating(int userId, int experienceId)
     {
         try
@@ -41,6 +41,38 @@ public class RatingController : ControllerBase
         catch (Exception ex)
         {
             var msg = $"Exception while getting rating for user {userId} and experience {experienceId}.";
+            _logger.LogCritical(msg, ex);
+            return StatusCode(500, msg);
+        }
+    }
+
+    /// <summary>
+    /// Enter a user's rating for an experience
+    /// </summary>
+    [HttpPost]
+    [Route("ratings/create")]
+    public async Task<ActionResult<RatingDto>> CreateRating(RatingCreationDto ratingCreationDto)
+    {
+        try
+        {
+            var createdRating= _mapper.Map<Entities.Rating>(ratingCreationDto);
+            await _ratingRepository.UpsertRatingAsync(createdRating);
+            await _ratingRepository.SaveChangesAsync();
+
+            var result = _mapper.Map<RatingDto>(createdRating);
+            
+            return CreatedAtRoute("GetRating",
+                new
+                {
+                    userId = result.UserId,
+                    experienceId = result.ExperienceId
+                },
+                result);
+        }
+        catch (Exception ex)
+        {
+            var msg = $"Exception while creating rating for " +
+                      $"user {ratingCreationDto.UserId} and experience {ratingCreationDto.ExperienceId}.";
             _logger.LogCritical(msg, ex);
             return StatusCode(500, msg);
         }

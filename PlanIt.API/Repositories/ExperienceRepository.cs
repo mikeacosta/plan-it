@@ -23,9 +23,9 @@ public class ExperienceRepository : IExperienceRepository
         {
             searchQuery = searchQuery.Trim();
             experiences = experiences.Where(e => e.Title.Contains(searchQuery)
-                || e.Description.Contains(searchQuery)
+                || (e.Description != null && e.Description.Contains(searchQuery))
                 || e.City.Contains(searchQuery)
-                || e.State.Contains(searchQuery)
+                || (e.State != null && e.State.Contains(searchQuery))
                 || e.Country.Contains(searchQuery));
         }
         
