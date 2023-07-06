@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PlanIt.API.DbContexts;
@@ -61,9 +62,16 @@ internal static class WebAppBuilderExtensions
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+        builder.Services.AddApiVersioning(setupAction =>
+        {
+            setupAction.AssumeDefaultVersionWhenUnspecified = true;
+            setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+            setupAction.ReportApiVersions = true;
+        });
+
         return builder;
     }
-    
+
     // Configure the request/response pipeline
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
