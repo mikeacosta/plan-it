@@ -24,6 +24,9 @@ public class UserController : ControllerBase
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
     
+    /// <summary>
+    /// Get all users
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserWithoutExperiencesDto>>> GetUsers(
         string? username, string? searchQuery, int pageNumber = 1, int pageSize = 10)
@@ -41,6 +44,9 @@ public class UserController : ControllerBase
         return Ok(users);
     }
     
+    /// <summary>
+    /// Get a user by id
+    /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id, bool includeExperiences = false)
     {

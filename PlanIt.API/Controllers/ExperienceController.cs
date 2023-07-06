@@ -49,6 +49,9 @@ public class ExperienceController : ControllerBase
         return Ok(experiences);
     }
     
+    /// <summary>
+    /// Get experiences for a user
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ExperienceDto>>> GetExperiences(
         int userId)
@@ -73,6 +76,9 @@ public class ExperienceController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Enter one experience for a user
+    /// </summary>
     [HttpGet("{experienceId}", Name = "GetExperience")]
     public async Task<ActionResult<ExperienceDto>> GetExperience(int userId, int experienceId)
     {
@@ -87,6 +93,9 @@ public class ExperienceController : ControllerBase
         return Ok(_mapper.Map<ExperienceDto>(experience));
     }
     
+    /// <summary>
+    /// Create an experience
+    /// </summary>
     [HttpPost]
     public async Task<ActionResult<ExperienceDto>> CreateExperience(int userId,
         ExperienceCreationDto experience)
@@ -110,6 +119,9 @@ public class ExperienceController : ControllerBase
             result);
     }
     
+    /// <summary>
+    /// Update an experience
+    /// </summary>
     [HttpPut("{experienceId}")]
     public async Task<ActionResult> UpdateExperience(int userId, int experienceId,
         ExperienceUpdateDto experience)
@@ -127,6 +139,9 @@ public class ExperienceController : ControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Partial update to an experience
+    /// </summary>
     [HttpPatch("{experienceId}")]
     public async Task<ActionResult> PartiallyUpdateExperience(
         int userId, int experienceId,
@@ -155,6 +170,9 @@ public class ExperienceController : ControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Delete an experience
+    /// </summary>
     [HttpDelete("{experienceId}")]
     public async Task<ActionResult> DeleteExperience(int userId, int experienceId)
     {
