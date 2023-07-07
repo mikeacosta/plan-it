@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace PlanIt.API.Controllers;
 
-[Route("api/authentication")]
+[Route("api/v{version:apiVersion}/authentication")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {

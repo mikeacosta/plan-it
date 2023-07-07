@@ -5,7 +5,7 @@ using PlanIt.Models.DTOs;
 
 namespace PlanIt.API.Controllers;
 
-[Route("api")]
+[Route("api/v{version:apiVersion}")]
 [ApiController]
 public class RatingController : ControllerBase
 {

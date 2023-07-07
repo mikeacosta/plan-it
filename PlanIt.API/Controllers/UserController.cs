@@ -7,7 +7,7 @@ using PlanIt.Models.DTOs;
 namespace PlanIt.API.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/v{version:apiVersion}/users")]
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;

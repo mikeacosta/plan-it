@@ -7,7 +7,7 @@ using PlanIt.Models.DTOs;
 
 namespace PlanIt.API.Controllers;
 
-[Route("api/users/{userId}/experiences")]
+[Route("api/v{version:apiVersion}/users/{userId}/experiences")]
 [ApiController]
 public class ExperienceController : ControllerBase
 {
@@ -32,7 +32,7 @@ public class ExperienceController : ControllerBase
     /// Get all experiences
     /// </summary>
     [HttpGet]
-    [Route("~/api/experiences/all")]
+    [Route("~/api/v{version:apiVersion}/experiences/all")]
     public async Task<ActionResult<IEnumerable<ExperienceDto>>> GetAllExperiences(
         string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {
