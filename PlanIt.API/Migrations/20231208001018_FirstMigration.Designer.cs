@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlanIt.API.DbContexts;
 
 #nullable disable
@@ -10,48 +11,51 @@ using PlanIt.API.DbContexts;
 namespace PlanIt.API.Migrations
 {
     [DbContext(typeof(PlanItDbContext))]
-    [Migration("20230331233638_SeedDatabase")]
-    partial class SeedDatabase
+    [Migration("20231208001018_FirstMigration")]
+    partial class FirstMigration
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("PlanIt.API.Entities.Experience", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("State")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -117,21 +121,61 @@ namespace PlanIt.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PlanIt.API.Entities.Rating", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ExperienceId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StarCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "ExperienceId");
+
+                    b.HasIndex("ExperienceId");
+
+                    b.ToTable("Ratings");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            ExperienceId = 1,
+                            StarCount = 5
+                        },
+                        new
+                        {
+                            UserId = 1,
+                            ExperienceId = 2,
+                            StarCount = 4
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            ExperienceId = 1,
+                            StarCount = 2
+                        });
+                });
+
             modelBuilder.Entity("PlanIt.API.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -153,7 +197,7 @@ namespace PlanIt.API.Migrations
                         new
                         {
                             Id = 3,
-                            Email = "user@gmail",
+                            Email = "user@gmail.com",
                             Username = "anonymous"
                         });
                 });
@@ -169,9 +213,35 @@ namespace PlanIt.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PlanIt.API.Entities.Rating", b =>
+                {
+                    b.HasOne("PlanIt.API.Entities.Experience", "Experience")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ExperienceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlanIt.API.Entities.User", "User")
+                        .WithMany("Ratings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Experience");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PlanIt.API.Entities.Experience", b =>
+                {
+                    b.Navigation("Ratings");
+                });
+
             modelBuilder.Entity("PlanIt.API.Entities.User", b =>
                 {
                     b.Navigation("Experiences");
+
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }

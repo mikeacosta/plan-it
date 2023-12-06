@@ -21,6 +21,7 @@ internal static class WebAppBuilderExtensions
     {
         builder.Services.AddControllers(options =>
             {
+                options.Filters.Add(new ProducesAttribute("application/json"));
                 options.ReturnHttpNotAcceptable = true;
             }).AddNewtonsoftJson()
             .AddXmlDataContractSerializerFormatters();
@@ -53,7 +54,7 @@ internal static class WebAppBuilderExtensions
         });
 
         builder.Services.AddDbContext<PlanItDbContext>(
-            dbContextOptions => dbContextOptions.UseMySQL(
+            dbContextOptions => dbContextOptions.UseNpgsql(
                 builder.Configuration["ConnectionStrings:PlanItDBConnectionString"]));
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
