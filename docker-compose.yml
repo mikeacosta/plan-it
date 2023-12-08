@@ -14,13 +14,13 @@ services:
     ports:
       - 8080:80
     environment:
-      - ConnectionStrings__PlanItDBConnectionString=server=planitdb;port=3306;database=dev_db;user=root;password=Abc12345
+      - ConnectionStrings__PlanItDBConnectionString=Host=planitdb;Database=dev_db;Username=postgres;Password=Abc12345
 
   planitdb:
-    image: mysql
+    image: postgres
     container_name: planit_db
     environment:
-      MYSQL_ROOT_PASSWORD: Abc12345
-      MYSQL_DATABASE: dev_db
+      POSTGRES_PASSWORD: Abc12345
+      POSTGRES_DB: dev_db
     ports:
-      - "3307:3306"
+      - "5432:5432"
