@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.API.Repositories;
@@ -9,6 +10,7 @@ namespace PlanIt.API.Controllers;
 
 [Route("api/v{version:apiVersion}/users/{userId}/experiences")]
 [ApiController]
+[Authorize]
 public class ExperienceController : ControllerBase
 {
     private readonly ILogger<ExperienceController> _logger;

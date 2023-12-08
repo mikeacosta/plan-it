@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.API.Repositories;
 using PlanIt.Models.DTOs;
@@ -7,6 +8,7 @@ namespace PlanIt.API.Controllers;
 
 [Route("api/v{version:apiVersion}")]
 [ApiController]
+[Authorize]
 public class RatingController : ControllerBase
 {
     private readonly ILogger<RatingController> _logger;

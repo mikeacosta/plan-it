@@ -34,16 +34,18 @@ public class AuthenticationController : ControllerBase
 
     public AuthenticationController(IConfiguration configuration)
     {
-        _configuration = configuration;
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
     
     [HttpPost("authenticate")]
     public ActionResult<string> Authenticate(AuthRequestBody authRequestBody)
     {
+        // step 1: validate username/password
         var user = ValidateCreds(authRequestBody.UserName, authRequestBody.Password);
         if (user == null)
             return Unauthorized();
         
+        // step 2: create a token
         var securityKey = new SymmetricSecurityKey(
             Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]));
         var signingCredentials = new SigningCredentials(
@@ -51,8 +53,8 @@ public class AuthenticationController : ControllerBase
         
         var claimsForToken = new List<Claim>();
         claimsForToken.Add(new Claim("sub", user.UserId.ToString()));
-        claimsForToken.Add(new Claim("username", user.Username));
-        claimsForToken.Add(new Claim("email", user.Email));
+        claimsForToken.Add(new Claim("preferred_username", user.Username));
+        claimsForToken.Add(new Claim("email_verified", user.Email));
 
         var jwtSecurityToken = new JwtSecurityToken(
             _configuration["Authentication:Issuer"],
@@ -68,9 +70,13 @@ public class AuthenticationController : ControllerBase
         return Ok(tokenToReturn);
     }
 
-    private PlanItUser ValidateCreds(string? username, string? password)
+    private PlanItUser? ValidateCreds(string? username, string? password)
     {
-        // hardcode for now
-        return new PlanItUser(1, "joeblow", "joe@blow.com");
+        // check the passed-through username/password against what's stored in database
+        // for now, just assume creds are valid
+        
+        return string.IsNullOrWhiteSpace(password) 
+            ? null 
+            : new PlanItUser(1, "joeblow", "joe@blow.com");
     }
 }

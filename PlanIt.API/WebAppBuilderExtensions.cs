@@ -1,6 +1,8 @@
 using System.Reflection;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PlanIt.API.DbContexts;
 using PlanIt.API.Repositories;
@@ -63,6 +65,21 @@ internal static class WebAppBuilderExtensions
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+        builder.Services.AddAuthentication("Bearer")
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Authentication:Issuer"],
+                    ValidAudience = builder.Configuration["Authentication:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
+                };
+            });
+
         builder.Services.AddApiVersioning(setupAction =>
         {
             setupAction.AssumeDefaultVersionWhenUnspecified = true;
@@ -85,6 +102,8 @@ internal static class WebAppBuilderExtensions
         app.UseHttpsRedirection();
 
         app.UseRouting();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
