@@ -58,24 +58,16 @@ public class ExperienceController : ControllerBase
     public async Task<ActionResult<IEnumerable<ExperienceDto>>> GetExperiences(
         int userId)
     {
-        try
+        if (!await _userRepository.UserExistsAsync(userId))
         {
-            if (!await _userRepository.UserExistsAsync(userId))
-            {
-                _logger.LogInformation(
-                    $"User with id {userId} wasn't found when accessing experiences.");
-                return NotFound();
-            }
+            _logger.LogInformation(
+                $"User with id {userId} wasn't found when accessing experiences.");
+            return NotFound();
+        }
             
-            var experiences = await _userRepository.GetExperiencesForUserAsync(userId);
+        var experiences = await _userRepository.GetExperiencesForUserAsync(userId);
 
-            return Ok(_mapper.Map<IEnumerable<ExperienceDto>>(experiences));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical($"Exception while getting experiences for user with id {userId}.", ex);
-            return StatusCode(500, "A problem occured while handling the request.");
-        }
+        return Ok(_mapper.Map<IEnumerable<ExperienceDto>>(experiences));
     }
 
     /// <summary>

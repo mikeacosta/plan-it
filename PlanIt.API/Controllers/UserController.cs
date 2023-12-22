@@ -50,26 +50,18 @@ public class UserController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id, bool includeExperiences = false)
     {
-        try
-        {
-            var userEntity = await _userRepository.GetUserAsync(id, true);
+        var userEntity = await _userRepository.GetUserAsync(id, true);
 
-            if (userEntity == null)
-            {
-                _logger.LogInformation(
-                    $"User with id {id} wasn't found.");
-                return NotFound();
-            }
-            
-            if (includeExperiences)
-                return Ok(_mapper.Map<UserDto>(userEntity));
-            
-            return Ok(_mapper.Map<UserWithoutExperiencesDto>(userEntity));
-        }
-        catch (Exception ex)
+        if (userEntity == null)
         {
-            _logger.LogCritical($"Exception while getting user with id {id}.", ex);
-            return StatusCode(500, "A problem occured while handling the request.");
+            _logger.LogInformation(
+                $"User with id {id} wasn't found.");
+            return NotFound();
         }
+            
+        if (includeExperiences)
+            return Ok(_mapper.Map<UserDto>(userEntity));
+            
+        return Ok(_mapper.Map<UserWithoutExperiencesDto>(userEntity));
     }
 }

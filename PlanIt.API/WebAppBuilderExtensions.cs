@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PlanIt.API.DbContexts;
+using PlanIt.API.Middleware;
 using PlanIt.API.Repositories;
 using Serilog;
 
@@ -93,6 +94,8 @@ internal static class WebAppBuilderExtensions
     // Configure the request/response pipeline
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        app.UseMiddleware<ErrorHandlerMiddleware>();
+        
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

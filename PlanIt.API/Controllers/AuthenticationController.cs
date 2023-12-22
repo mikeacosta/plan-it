@@ -75,8 +75,8 @@ public class AuthenticationController : ControllerBase
         // check the passed-through username/password against what's stored in database
         // for now, just assume creds are valid
         
-        return string.IsNullOrWhiteSpace(password) 
+        return (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             ? null 
-            : new PlanItUser(1, "joeblow", "joe@blow.com");
+            : new PlanItUser(1, username, "user@email.com");
     }
 }
